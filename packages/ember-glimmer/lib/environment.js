@@ -1,4 +1,4 @@
-import { Environment } from 'glimmer-runtime';
+import { Environment as GlimmerEnvironment } from 'glimmer-runtime';
 import { isConst } from 'glimmer-reference';
 import Dict from 'ember-metal/empty_object';
 import { CurlyComponentSyntax, CurlyComponentDefinition } from './components/curly-component';
@@ -23,6 +23,7 @@ import {
 import { default as hash } from './helpers/hash';
 import { default as loc } from './helpers/loc';
 import { default as log } from './helpers/log';
+import { OWNER } from 'container/owner';
 
 const builtInHelpers = {
   concat,
@@ -33,8 +34,12 @@ const builtInHelpers = {
   log
 };
 
-export default class extends Environment {
-  constructor({ dom, owner }) {
+export default class Environment extends GlimmerEnvironment {
+  static create(options) {
+    return new Environment(options);
+  }
+
+  constructor({ dom, [OWNER]: owner }) {
     super(dom);
     this.owner = owner;
     this._components = new Dict();
